@@ -42,6 +42,7 @@ function draw() {
     if (geneticBach.getFinished()) {
         console.log('Numero de Gen = ',geneticBach.generations);
         noLoop();}
+    //noLoop();
 }
 
 function displayAllPhrases(phrases) {

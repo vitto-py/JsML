@@ -28,9 +28,10 @@ class DNA {
 			}
 		}
 		//this.fitness = score/target.length; //linear likehood
-		this.fitness = pow(score/target.length,3); //exponential likelihood
+		this.fitness = pow(score/target.length,3) + 0.01; //exponential likelihood
 		//la forma exponencial le da mas peso a aquellos que tienen mas caracteres correctos
-	}
+	  //0.01 es para que todos tengan una chance del 1%
+  }
 
 	crossover(father) {
 		let child = new DNA(this.genes.length);

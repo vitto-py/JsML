@@ -27,37 +27,51 @@ class Population {
         }
     }
 
+    acceptReject(maxFitness) {
+      let i = 0
+      while(i < 1000) {
+        let ix = floor(random(this.population.length)) //pick an element
+
+        let proba = random(0,maxFitness) //run your chances
+        if (proba < this.population[ix].fitness) { //is proba less that your possibilities?
+          //if you have a fitness of 10%, few times are gonna be picked
+          return ix
+        } 
+        i++
+      }
+    }
     generateNextGeneration() {
         //compute individuals over its chances of reproduction
         //reproduction probability proportional to FITNESS
-
+        //THIS IS THE PART THAT I CHANGED to RejectionSampling
         //max fitness probability
+
         let maxFitness = 0;
         for (let i = 0; i < this.population.length; i++) {if (this.population[i].fitness > maxFitness) {maxFitness = this.population[i].fitness;}}
 
         //create a new array where the number of individuals is proportional to its fitness 
-        this.matingPool = []; // restart the pool
-        for (let i = 0; i < this.population.length; i++) {
-            let howManyTimes = Math.floor(map(this.population[i].fitness, 0, maxFitness, 0, 100));
-            for (let j = 0; j < howManyTimes; j++) {this.matingPool.push(this.population[i]);}}
+      //DONT FOTGET THIS  
+      this.matingPool = []; // restart the pool
         
-        
-        //crossover
-        for (let i = 0; i < this.population.length ; i++) {
-            let randomIndexA = Math.floor(random(0,this.matingPool.length));
-            let randomIndexB = Math.floor(random(0,this.matingPool.length));
-            let child = this.matingPool[randomIndexA].crossover(this.matingPool[randomIndexB]);
-            this.population[i] = child;
-        }
+      let newPopu = []; 
+      //crossover
+      for (let i = 0; i < this.population.length ; i++) {
+        let randomIndexA = this.acceptReject(maxFitness)
+        let randomIndexB = this.acceptReject(maxFitness)
+        let child = this.population[randomIndexA].crossover(this.population[randomIndexB]);
+        newPopu.push(child); //aux Array
+        console.log(newPopu)
+      }
+      
+      this.population = newPopu;
 
-        //mutation
-        for (let i = 0; i < this.population.length ; i++) {
-            this.population[i].mutate(this.mutationRate);
-        }
+      //mutation
+      for (let i = 0; i < this.population.length ; i++) {
+        this.population[i].mutate(this.mutationRate);
+      }
 
-        
-        this.generations += 1;
-    }
+      this.generations += 1;
+  }
 
 
     // compute metrics
@@ -71,7 +85,7 @@ class Population {
         // best phrase
         this.best = this.population[bestOneIndex].getPhrase();
         // has the stop criteria been reached?
-        if (bestOne == this.perfectScore) {
+        if (bestOne == 0.01 + this.perfectScore) {
             this.finished = true;
         }
     }
