@@ -3,6 +3,7 @@ function Rocket() {
   this.vel = createVector(); //default 0,0
   this.acc = createVector();
   this.fitness = 0;
+  this.normFitness = 0;
 
   this.dna = new DNA();
 
@@ -34,4 +35,14 @@ function Rocket() {
     let d = dist(this.pos.x, this.pos.y, target.x, target.y);
     this.fitness = round(1/d,5) //the closer the better
   }
+
+  this.reproduce = function (partner) {
+    let p = floor(random(lifespan)) //split point 
+    let child = new DNA();
+    for (let j = 0; j < lifespan; j++) {
+      if (j < p) {child.genes[j] = this.dna.genes[j]} 
+      else {child.genes[j] = partner.dna.genes[j]}      
+    }
+    return child;
+  };
 }
