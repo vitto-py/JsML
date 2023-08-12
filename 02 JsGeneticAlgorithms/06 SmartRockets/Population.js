@@ -1,6 +1,6 @@
 //handles the macro interactions of rockets
 function Population() {
-  this.popSize = 20
+  this.popSize = 100
   this.popux = []
 
   for (let i = 0; i < this.popSize; i++) {
