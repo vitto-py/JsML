@@ -38,11 +38,12 @@ function Rocket() {
 
   this.fitCalc = function () {
     let d = dist(this.pos.x, this.pos.y, target.x, target.y);
-    this.fitness = round(map(d, 0, width, width, 0, true), 2);
+    this.fitness = round(map(d, 0, width, 10, 0, true), 2);
+    this.fitness = pow(this.fitness,2.71);
     //the closer the better
     
     //has hit the target?
-    if (this.fitness > 390 ) {
+    if (abs(d) < 10 ) {
       this.hitTarget = true;
       this.fitness *= 10;
     }
