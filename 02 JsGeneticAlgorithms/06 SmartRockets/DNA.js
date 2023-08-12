@@ -6,5 +6,14 @@ function DNA() {
     this.genes[i].setMag(0.1); //go slower
   }
 
+  this.mutation = function() {
+    for (let i = 0; i < lifespan; i++) {
+      let proba = random();
+      if (proba < mutationRate) {
+        this.genes[i] = p5.Vector.random2D();
+        this.genes[i].setMag(0.1); //go slower
+      }
+    }
+  }
   
 }
