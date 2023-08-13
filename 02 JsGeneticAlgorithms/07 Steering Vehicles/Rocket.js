@@ -1,80 +1,79 @@
 function Rocket() {
-  this.pos = createVector(width / 2, height);
-  this.vel = createVector(); //default 0,0
-  this.acc = createVector();
-  this.fitness = 0;
-  this.normFitness = 0;
-  this.hitTarget = false;
-  this.hitObstacle = false;
-  this.hitWall = false;
+  this.pos = createVector(random(width), random(height));
+  this.vel = p5.Vector.random2D(); //default 0,0
+  this.acc = createVector(0, 0);
+  this.health = 1;
+  this.r = 4; //trangle side
+  this.dna = [];
 
-  this.dna = new DNA();
+  //attraction factor
+  this.dna[0] = random(-3, 3); //food
+  this.dna[1] = random(-3, 3); //poison
+
+  this.behaviour = function () {};
+
+  //computes the attraction force to the food, calls applyForce
+  this.seek = function (target) {
+    // distance bwn the two points
+    let desired = p5.Vector.sub(target, this.pos);
+    // correct direction
+    let steer = p5.Vector.sub(this.vel, desired);
+    steer.limit(3);
+
+    return this.applyForce(steer);
+  };
+
+  this.eat = function (list, nutrition) {
+    let d = Infinity;
+    let closest = null; //the closest element is a vector
+
+    //loops through the list, finds the closest, eliminates
+    //the food if dn < 5 px
+    for (let k = list.length - 1; k >= 0; k--) {
+      let dn = abs(dist(list[k].x, list[k].y, this.pos.x, this.pos.y));
+      if (dn < d) {
+        closest = list[k];
+        d = dn;
+      }
+      if (dn < 5) {
+        list.splice(k, 1);
+      }
+    }
+    //if found, call seek
+    if (closest) {
+      //no food left
+      this.health += nutrition;
+      return this.seek(closest);
+    }
+    return createVector(0, 0);
+  };
 
   this.applyForce = function (force) {
-    this.acc.add(force);
+    this.acc.sub(force);
+    this.acc.limit(3);
   };
 
   this.update = function () {
-    //each frame will apply a new force stored in dna.genes
-    
-    if (!this.hitTarget && !this.hitObstacle && !this.hitWall) {
-      this.acc.add(this.dna.genes[count]);
-      this.vel.add(this.acc);
-      this.pos.add(this.vel);
-      this.acc.mult(0);
-    }
+    this.vel.add(this.acc);
+    this.vel.limit(3);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
   };
 
-  this.show = function () {
+  this.display = function () {
+    // Draw a triangle rotated in the direction of velocity
+    let angle = this.vel.heading() + PI / 2;
     push();
-    noStroke();
-    fill(255, 100);
     translate(this.pos.x, this.pos.y);
-    rotate(this.vel.heading()); //gives you the direction of the vector (angle)
-    rectMode(CENTER);
-    rect(0, 0, 20, 5);
+    rotate(angle);
+    fill(255);
+    stroke(255);
+    strokeWeight(1);
+    beginShape();
+    vertex(0, -this.r * 2);
+    vertex(-this.r, this.r * 2);
+    vertex(this.r, this.r * 2);
+    endShape(CLOSE);
     pop();
-  };
-
-  this.fitCalc = function () {
-    let d = dist(this.pos.x, this.pos.y, target.x, target.y);
-    this.fitness = round(map(d, 0, width, 10, 0, true), 2);
-    this.fitness = pow(this.fitness,2.71);
-    //the closer the better, exponential
-    
-    //has hit the target?
-    if (abs(d) < 10 ) {
-      this.hitTarget = true;
-      this.fitness *= 10;
-    }
-    
-    //has hit the wall?
-    if (this.pos.x > 400 || this.pos.x < 0 || this.pos.y > 400 ||this.pos.y < 0) {
-      this.hitWall = true;
-      this.fitness /= 10;
-    }
-
-    //has hit the obstable?
-    if (this.pos.x > obstacle.x && this.pos.x < (obstacle.x + ow) 
-      && this.pos.y > obstacle.y && this.pos.y < (obstacle.y + oh)) {
-      this.hitObstacle = true;
-      this.fitness /= 40;
-      //console.log("hitted")
-    }
-  };
-
-  this.reproduce = function (partner) {
-    let child = new Rocket();
-    let p = floor(random(lifespan)); //split point
-    //let childDNA = new DNA();
-    for (let j = 0; j < lifespan; j++) {
-      if (j < p) {
-        child.dna.genes[j] = this.dna.genes[j];
-      } else {
-        child.dna.genes[j] = partner.dna.genes[j];
-      }
-    }
-    child.dna.mutation();
-    return child;
   };
 }
