@@ -72,3 +72,13 @@ Matrix.prototype.randomize = function () {
     }
   }
 };
+
+Matrix.prototype.transpose = function () {
+  let m = new Matrix(this.cols, this.rows);
+  for (let i = 0; i < this.rows; i++) {
+    for (let j = 0; j < this.cols; j++) {
+      m.matrix[j][i] = this.matrix[i][j];
+    }
+  }
+  return m;
+};
