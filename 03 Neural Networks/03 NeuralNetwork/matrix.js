@@ -13,6 +13,9 @@ class Matrix {
       }
     }
   }
+  print() {
+    console.table(this.matrix);
+  }
   //matrix multiplication
   static multiply(m1, m2) {
     if (m1 instanceof Matrix && m2 instanceof Matrix) {
@@ -57,6 +60,15 @@ class Matrix {
     }
   }
 
+  static substract(a, b) {
+    let result = new Matrix(a.rows, a.cols);
+    for (let r = 0; r < a.rows; r++) {
+      for (let c = 0; c < a.cols; c++) {
+        result.matrix[r][c] = a.matrix[r][c] - b.matrix[r][c];
+      }
+    }
+    return result;
+  }
   //add add
   add(e) {
     if (e instanceof Matrix) {
@@ -79,7 +91,7 @@ class Matrix {
   randomize() {
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.cols; j++) {
-        this.matrix[i][j] = Math.floor(Math.random() * 10);
+        this.matrix[i][j] = Math.random() * 2 - 1;
       }
     }
   }
@@ -91,6 +103,15 @@ class Matrix {
         m.matrix[j][i] = this.matrix[i][j];
       }
     }
+    return m;
+  }
+
+  static fromArray(a) {
+    let m = new Matrix(a.length, 1); //column vector
+    for (let i = 0; i < a.length; i++) {
+      m.matrix[i][0] = a[i];
+    }
+    //console.table(m.matrix)
     return m;
   }
 }
