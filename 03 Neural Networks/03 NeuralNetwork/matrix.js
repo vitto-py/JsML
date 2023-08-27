@@ -52,6 +52,15 @@ class Matrix {
   }
 
   //apply func to each element on the matrix
+  static map(func, matrix) {
+    let m = new Matrix(matrix.rows,matrix.cols)
+    for (let i = 0; i < matrix.rows; i++) {
+      for (let j = 0; j < matrix.cols; j++) {
+        m.matrix[i][j] = func(matrix.matrix[i][j]);
+      }
+    }
+    return m
+  }
   map(func) {
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.cols; j++) {
@@ -96,11 +105,11 @@ class Matrix {
     }
   }
 
-  transpose() {
-    let m = new Matrix(this.cols, this.rows);
-    for (let i = 0; i < this.rows; i++) {
-      for (let j = 0; j < this.cols; j++) {
-        m.matrix[j][i] = this.matrix[i][j];
+  static transpose(mat) {
+    let m = new Matrix(mat.cols, mat.rows);
+    for (let i = 0; i < mat.rows; i++) {
+      for (let j = 0; j < mat.cols; j++) {
+        m.matrix[j][i] = mat.matrix[i][j];
       }
     }
     return m;
