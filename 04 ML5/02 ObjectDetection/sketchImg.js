@@ -1,9 +1,9 @@
-let video;
+let img;
 let detector;
-let rr = [];
+let rr;
 
 function preload() {
-  video = createCapture(VIDEO);
+  img = loadImage("./data/dog_cat.jpg");
   detector = ml5.objectDetector("cocossd");
 }
 
@@ -12,9 +12,9 @@ function gotResult(error, result) {
     console.error(error);
   } else {
     rr = result;
-    //console.log(rr);
+    console.log(rr);
     for (let i = 0; i < rr.length; i++) {
-      let object = rr[i];
+      let object = result[i];
       noFill();
       stroke(0, 255, 0);
       strokeWeight(2);
@@ -33,20 +33,15 @@ function gotResult(error, result) {
         height * object.normalized.y + 20
       );
     }
-    detector.detect(video, gotResult);
   }
 }
 
 function setup() {
   createCanvas(400, 400);
-  video.size(400, 400);
-  video.hide();
-  detector.detect(video, gotResult);
+  image(img, 0, 0, width, height);
+  detector.detect(img, gotResult);
 }
 
 function draw() {
   //background(0);
-  image(video, 0, 0);
-
- 
 }
