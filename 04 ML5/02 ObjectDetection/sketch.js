@@ -1,3 +1,4 @@
+//COCOSSD for object detection
 let video;
 let detector;
 let rr = [];
@@ -47,6 +48,4 @@ function setup() {
 function draw() {
   //background(0);
   image(video, 0, 0);
-
- 
 }
